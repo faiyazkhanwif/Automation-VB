@@ -1,8 +1,8 @@
-Sub test() 
+Sub processdata() 
 
  
 
-    Dim wsCopy As Worksheet, wsDest As Worksheet 
+    Dim wsCopy As Worksheet, wsDest As Worksheet, wsfin As Worksheet 
 
     Dim lCopyLastRow As Long, lDestLastRow As Long 
 
@@ -56,7 +56,7 @@ Sub test()
 
         dt = Format(Date - 3, "mm/dd/yy") 
 
-        word = "Weekly" 
+        word = "weekly" 
 
     Else 
 
@@ -175,3 +175,11 @@ Sub test()
      
 
 End Sub 
+
+ 
+
+ 
+
+ 
+
+ 
