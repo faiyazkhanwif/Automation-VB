@@ -28,7 +28,7 @@ Sub deleteredundant()
 
     Columns("A").SpecialCells(xlCellTypeBlanks).EntireRow.Delete 
 
-    MsgBox ("Deleted redundant data!") 
+    'MsgBox ("Deleted redundant data!") 
 
 End Sub 
 

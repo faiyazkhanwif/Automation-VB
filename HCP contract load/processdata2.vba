@@ -1,4 +1,4 @@
-Sub processdata2() 
+Sub fullautotest2() 
 
  
 
@@ -158,23 +158,47 @@ Sub processdata2()
 
      
 
-    MsgBox ("Done!") 
+    'MsgBox ("Done!") 
 
-    'If sDayName = "Monday" Then 
+    Dim lr As Long 
 
-        'Application.Run ("'How to load HCP contracts to JDE F4801 test.xlsm'!Macro2") 
-
-    'Else 
-
-        'Application.Run ("'How to load HCP contracts to JDE F4801 test.xlsm'!Macro1") 
-
-    'End If 
-
- 
+    lr = wsfin.Cells(Rows.Count, 1).End(xlUp).Row 
 
      
 
+    If lr = 1 Then 
+
+        MsgBox ("All duplicates, no data to be loaded in JDE.") 
+
+    Else 
+
+        If sDayName = "Monday" Then 
+
+            Application.Run "Macro2" 
+
+        Else 
+
+            Application.Run "Macro1" 
+
+        End If 
+
+ 
+
+        Application.Run "deleteredundant" 
+
+     
+
+        Application.Run "generateCSV" 
+
+    End If 
+
 End Sub 
+
+ 
+
+ 
+
+ 
 
  
 
