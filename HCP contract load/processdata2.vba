@@ -10,6 +10,14 @@ Sub fullautotest2()
 
     'Set variables for copy and destination sheets 
 
+    Dim WS As Worksheet 
+
+    For Each WS In Workbooks("Report for Jim.xlsx").Worksheets 
+
+        WS.Name = "Sheet1" 
+
+    Next WS 
+
     Set wsCopy = Workbooks("Report for Jim.xlsx").Worksheets("Sheet1") 
 
     Set wsDest = Workbooks("CUMULATIVE DAILY FILE.xlsx").Worksheets("Sheet1") 
