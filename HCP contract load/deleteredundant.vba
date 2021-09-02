@@ -26,7 +26,13 @@ Sub deleteredundant()
 
     Next i 
 
-    Columns("A").SpecialCells(xlCellTypeBlanks).EntireRow.Delete 
+     
+
+    On Error Resume Next 
+
+        Columns("A").SpecialCells(xlCellTypeBlanks).EntireRow.Delete 
+
+    On Error GoTo 0 
 
     'MsgBox ("Deleted redundant data!") 
 
