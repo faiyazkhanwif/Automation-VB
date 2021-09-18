@@ -26,6 +26,8 @@ Sub automate()
 
     'vi. Copy from wsDest to wsDestlc 
 
+    'vii. Filter and remove redundant from wsDestlc data based on status 
+
      
 
     'i 
@@ -164,11 +166,43 @@ Sub automate()
 
     Application.CutCopyMode = False 
 
-    MsgBox "Done" 
+     
 
      
 
+    'vii. 
+
+    wsDestlc.Activate 
+
+    Dim lastRow As Long 
+
+    lastRow = Cells(wsDestlc.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With wsDestlc 
+
+        .AutoFilterMode = False 
+
+        With .Range("G1:G" & lastRow) 
+
+            .AutoFilter Field:=1, Criteria1:="Inactive" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+     
+
+    MsgBox "Done" 
+
 End Sub 
+
+ 
 
  
 
