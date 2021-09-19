@@ -28,9 +28,15 @@ Sub automate()
 
     'vii. Filter and remove redundant from wsDestlc data based on status 
 
+    'viii. Copy to new sheet with custom name reflecting date (*2) 
+
+    'ix. Filter data based on Pivot requirements (*2) 
+
+    'x. Format table (*2) 
+
      
 
-    'i 
+    'i.------- 
 
     wsDest.Activate 
 
@@ -42,7 +48,7 @@ Sub automate()
 
      
 
-    'ii 
+    'ii.------- 
 
     wsSrcsn.Activate 
 
@@ -58,7 +64,7 @@ Sub automate()
 
      
 
-    'iii 
+    'iii.------- 
 
     wsSrc.Activate 
 
@@ -84,7 +90,7 @@ Sub automate()
 
      
 
-    'iv. 
+    'iv.------- 
 
     Dim i As Integer 
 
@@ -108,7 +114,7 @@ Sub automate()
 
      
 
-    'v. 
+    'v.------- 
 
     wsDestlc.Activate 
 
@@ -116,7 +122,7 @@ Sub automate()
 
      
 
-    'vi. 
+    'vi.------- 
 
     wsDest.Activate 
 
@@ -170,7 +176,7 @@ Sub automate()
 
      
 
-    'vii. 
+    'vii.------- 
 
     wsDestlc.Activate 
 
@@ -196,11 +202,407 @@ Sub automate()
 
     End With 
 
+    Application.CutCopyMode = False 
+
      
+
+     
+
+    'viii.------- 
+
+    Dim dt As String 
+
+    dt = Format(Date, "yyyy/mm/dd") 
+
+     
+
+    Dim s1 As String 
+
+    s1 = Replace(dt, "/", "") 
+
+     
+
+    wsDestsn.Activate 
+
+    Dim sheetname As String 
+
+    sheetname = ">45days_Reminder_" & s1 
+
+    Sheets.Add(After:=wsDestsn).Name = sheetname 
+
+     
+
+    Dim nsheet As Worksheet 
+
+    Set nsheet = Workbooks("User Report for License Exchange and Deactivation.xlsm").Worksheets(sheetname) 
+
+ 
+
+    wsDestlc.Activate 
+
+    Dim cntnew As Long 
+
+    cntnew = Cells(wsDestlc.Rows.Count, "C").End(xlUp).Row 
+
+    wsDestlc.Range("A1:T" & cntnew).Copy 
+
+    nsheet.Activate 
+
+    nsheet.Range("A1").PasteSpecial Paste:=xlPasteValuesAndNumberFormats 
+
+     
+
+    Application.CutCopyMode = False 
+
+     
+
+     
+
+    'ix.------- 
+
+    ' user created remove n 
+
+    nsheet.Activate 
+
+    Dim lrforuc As Long 
+
+    lrforuc = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheet 
+
+        .AutoFilterMode = False 
+
+        With .Range("J1:J" & lrforuc) 
+
+            .AutoFilter Field:=1, Criteria1:="n" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    ' doc owner remove y 
+
+    nsheet.Activate 
+
+    Dim lrfordo As Long 
+
+    lrfordo = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheet 
+
+        .AutoFilterMode = False 
+
+        With .Range("L1:L" & lrfordo) 
+
+            .AutoFilter Field:=1, Criteria1:="y" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    ' last login remove n 
+
+    nsheet.Activate 
+
+    Dim lrforll As Long 
+
+    lrforll = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheet 
+
+        .AutoFilterMode = False 
+
+        With .Range("K1:K" & lrforll) 
+
+            .AutoFilter Field:=1, Criteria1:="n" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    ' Default group remove dba,labeling,PCS,regulatory 
+
+     
+
+    'dba 
+
+    nsheet.Activate 
+
+    Dim lrfordgdba As Long 
+
+    lrfordgdba = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheet 
+
+        .AutoFilterMode = False 
+
+        With .Range("E1:E" & lrfordgdba) 
+
+            .AutoFilter Field:=1, Criteria1:="dba" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'Labeling 
+
+    nsheet.Activate 
+
+    Dim lrfordglb As Long 
+
+    lrfordglb = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheet 
+
+        .AutoFilterMode = False 
+
+        With .Range("E1:E" & lrfordglb) 
+
+            .AutoFilter Field:=1, Criteria1:="Labeling" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'PCS 
+
+    nsheet.Activate 
+
+    Dim lrfordgpcs As Long 
+
+    lrfordgpcs = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheet 
+
+        .AutoFilterMode = False 
+
+        With .Range("E1:E" & lrfordgpcs) 
+
+            .AutoFilter Field:=1, Criteria1:="PCS" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'Regulatory 
+
+    nsheet.Activate 
+
+    Dim lrfordgrg As Long 
+
+    lrfordgrg = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheet 
+
+        .AutoFilterMode = False 
+
+        With .Range("E1:E" & lrfordgrg) 
+
+            .AutoFilter Field:=1, Criteria1:="Regulatory" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    ' Title remove dir,vp 
+
+    'dir remove 
+
+    nsheet.Activate 
+
+    Dim lrfortt As Long 
+
+    lrfortt = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    Dim rngtt As Range 
+
+    Dim postt As Integer 
+
+    Set rngtt = nsheet.Range("A1:A" & lrfortt) 
+
+     
+
+    For i = rngtt.Cells.Count To 1 Step -1 
+
+        postt = InStr(LCase(rngtt.Item(i).Value), LCase("dir")) 
+
+        If postt > 0 Then 
+
+            rngtt.Item(i).EntireRow.Delete 
+
+        End If 
+
+    Next i 
+
+    Application.CutCopyMode = False 
+
+    'vp remove 
+
+    Dim lrfortt2 As Long 
+
+    lrfortt2 = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    Dim rngtt2 As Range 
+
+    Dim postt2 As Integer 
+
+    Set rngtt2 = nsheet.Range("A1:A" & lrfortt2) 
+
+     
+
+    For i = rngtt2.Cells.Count To 1 Step -1 
+
+        postt2 = InStr(LCase(rngtt2.Item(i).Value), LCase("VP")) 
+
+        If postt2 > 0 Then 
+
+            rngtt2.Item(i).EntireRow.Delete 
+
+        End If 
+
+    Next i 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'Name remove data migration 
+
+    Dim lrfornm As Long 
+
+    lrfornm = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    Dim rngnm As Range 
+
+    Dim posnm As Integer 
+
+    Set rngnm = nsheet.Range("C1:C" & lrfornm) 
+
+     
+
+    For i = rngnm.Cells.Count To 1 Step -1 
+
+        posnm = InStr(LCase(rngnm.Item(i).Value), LCase("data migration")) 
+
+        If posnm > 0 Then 
+
+            rngnm.Item(i).EntireRow.Delete 
+
+        End If 
+
+    Next i 
+
+    Application.CutCopyMode = False 
+
+     
+
+     
+
+    'x 
+
+    Dim tbl As ListObject 
+
+    Dim rng As Range 
+
+    Dim lrfortable As Long 
+
+    lrfortable = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+    Set rng = nsheet.Range("A1:T" & lrfortable) 
+
+ 
+
+    Set tbl = nsheet.ListObjects.Add(xlSrcRange, rng, , xlYes) 
+
+    tbl.TableStyle = "TableStyleMedium2" 
+
+     
+
+    Application.CutCopyMode = False 
 
     MsgBox "Done" 
 
+     
+
 End Sub 
+
+ 
 
  
 
