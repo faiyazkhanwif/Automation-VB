@@ -2,7 +2,7 @@ Sub automate()
 
     Dim wsSrc As Worksheet, wsDest As Worksheet, wsSrcsn As Worksheet, wsDestsn As Worksheet, wsDestlc As Worksheet 
 
-    Set wsSrc = Workbooks("1_License_usage_report_Aug11_to_Aug26th_with_periodic_review_count.xlsx").Worksheets("Sheet2") 
+    Set wsSrc = Workbooks("License_usage_report.xlsx").Worksheets("License_usage_report") 
 
     Set wsDest = Workbooks("User Report for License Exchange and Deactivation.xlsm").Worksheets("Ignite") 
 
@@ -596,7 +596,561 @@ Sub automate()
 
     Application.CutCopyMode = False 
 
-    MsgBox "Done" 
+     
+
+     
+
+     
+
+    'viii, ix, x for second report 
+
+     
+
+    'viii(*2)-------- 
+
+    Dim dta2c As String 
+
+    dta2c = Format(Date, "yyyy/mm/dd") 
+
+     
+
+    Dim sa2c As String 
+
+    sa2c = Replace(dta2c, "/", "") 
+
+     
+
+    Dim wsDest45 As Worksheet 
+
+    Set wsDest45 = Workbooks("User Report for License Exchange and Deactivation.xlsm").Worksheets("SNOW") 
+
+    wsDest45.Activate 
+
+     
+
+    Dim sheetnamea2c As String 
+
+    sheetnamea2c = "A2C_Reminder_" & sa2c 
+
+    Sheets.Add(After:=wsDest45).Name = sheetnamea2c 
+
+     
+
+    Dim nsheeta2c As Worksheet 
+
+    Set nsheeta2c = Workbooks("User Report for License Exchange and Deactivation.xlsm").Worksheets(sheetnamea2c) 
+
+ 
+
+    wsDestlc.Activate 
+
+    Dim cntnewa2c As Long 
+
+    cntnewa2c = Cells(wsDestlc.Rows.Count, "C").End(xlUp).Row 
+
+    wsDestlc.Range("A1:T" & cntnewa2c).Copy 
+
+    nsheeta2c.Activate 
+
+    nsheeta2c.Range("A1").PasteSpecial Paste:=xlPasteValuesAndNumberFormats 
+
+     
+
+    Application.CutCopyMode = False 
+
+     
+
+     
+
+    'ix.(*2) 
+
+    'license level 
+
+    nsheeta2c.Activate 
+
+    Dim lrforlla2c As Long 
+
+    lrforlla2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("F1:F" & lrforlla2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>Author" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'status 
+
+    nsheeta2c.Activate 
+
+    Dim lrforsa2c As Long 
+
+    lrforsa2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("G1:G" & lrforsa2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>Active" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'user created 
+
+    nsheeta2c.Activate 
+
+    Dim lrforuca2c As Long 
+
+    lrforuca2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("J1:J" & lrforuca2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>y" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+     
+
+    'doc owner 
+
+    nsheeta2c.Activate 
+
+    Dim lrfordoa2c As Long 
+
+    lrfordoa2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("L1:L" & lrfordoa2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>n" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+     
+
+    'part rev 
+
+    nsheeta2c.Activate 
+
+    Dim lrforpra2c As Long 
+
+    lrforpra2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("M1:M" & lrforpra2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>0" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'doc rev 
+
+    nsheeta2c.Activate 
+
+    Dim lrfordra2c As Long 
+
+    lrfordra2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("N1:N" & lrfordra2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>0" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'ECR rev 
+
+    nsheeta2c.Activate 
+
+    Dim lrforecrra2c As Long 
+
+    lrforecrra2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("P1:P" & lrforecrra2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>0" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'ECN rev 
+
+    nsheeta2c.Activate 
+
+    Dim lrforecnra2c As Long 
+
+    lrforecnra2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("Q1:Q" & lrforecnra2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>0" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'DHF rev 
+
+    nsheeta2c.Activate 
+
+    Dim lrfordhfra2c As Long 
+
+    lrfordhfra2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("R1:R" & lrfordhfra2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>0" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'datasets 
+
+    nsheeta2c.Activate 
+
+    Dim lrfordatara2c As Long 
+
+    lrfordatara2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("S1:S" & lrfordatara2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>0" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'number of workflows 
+
+    nsheeta2c.Activate 
+
+    Dim lrfornfra2c As Long 
+
+    lrfornfra2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("T1:T" & lrfornfra2c) 
+
+            .AutoFilter Field:=1, Criteria1:="<>0" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+     
+
+    ' Default group remove dba,labeling,PCS,regulatory 
+
+     
+
+    'dba 
+
+    nsheeta2c.Activate 
+
+    Dim lrfordbaa2c As Long 
+
+    lrfordbaa2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("E1:E" & lrfordbaa2c) 
+
+            .AutoFilter Field:=1, Criteria1:="dba" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'Labeling 
+
+    nsheeta2c.Activate 
+
+    Dim lrforlba2c As Long 
+
+    lrforlba2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("E1:E" & lrforlba2c) 
+
+            .AutoFilter Field:=1, Criteria1:="Labeling" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'PCS 
+
+    nsheeta2c.Activate 
+
+    Dim lrforpcsa2c As Long 
+
+    lrforpcsa2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("E1:E" & lrforpcsa2c) 
+
+            .AutoFilter Field:=1, Criteria1:="PCS" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+    'Regulatory 
+
+    nsheeta2c.Activate 
+
+    Dim lrforrega2c As Long 
+
+    lrforrega2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    With nsheeta2c 
+
+        .AutoFilterMode = False 
+
+        With .Range("E1:E" & lrforrega2c) 
+
+            .AutoFilter Field:=1, Criteria1:="Regulatory" 
+
+            .Offset(1, 0).SpecialCells(xlCellTypeVisible).EntireRow.Delete 
+
+        End With 
+
+        .AutoFilterMode = False 
+
+    End With 
+
+    Application.CutCopyMode = False 
+
+     
+
+     
+
+    'x(*2) 
+
+    Dim tbla2c As ListObject 
+
+    Dim rnga2c As Range 
+
+    Dim lrfortablea2c As Long 
+
+    lrfortablea2c = Cells(nsheeta2c.Rows.Count, "C").End(xlUp).Row 
+
+    Set rnga2c = nsheeta2c.Range("A1:T" & lrfortablea2c) 
+
+ 
+
+    Set tbla2c = nsheeta2c.ListObjects.Add(xlSrcRange, rnga2c, , xlYes) 
+
+    tbla2c.TableStyle = "TableStyleMedium2" 
+
+     
+
+    Application.CutCopyMode = False 
+
+     
+
+    MsgBox "Reports have been generated" 
 
      
 
