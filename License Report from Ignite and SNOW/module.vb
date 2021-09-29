@@ -496,11 +496,15 @@ Sub automate()
 
     For i = rngtt.Cells.Count To 1 Step -1 
 
-        postt = InStr(LCase(rngtt.Item(i).Value), LCase("dir")) 
+        If InStr(1, rngtt.Item(i).Text, "#N/A") = 0 Then 'Data type exception handler 
 
-        If postt > 0 Then 
+            postt = InStr(LCase(rngtt.Item(i).Value), LCase("dir")) 
 
-            rngtt.Item(i).EntireRow.Delete 
+            If postt > 0 Then 
+
+                rngtt.Item(i).EntireRow.Delete 
+
+            End If 
 
         End If 
 
@@ -526,11 +530,15 @@ Sub automate()
 
     For i = rngtt2.Cells.Count To 1 Step -1 
 
-        postt2 = InStr(LCase(rngtt2.Item(i).Value), LCase("VP")) 
+        If InStr(1, rngtt.Item(i).Text, "#N/A") = 0 Then 'Data type exception handler 
 
-        If postt2 > 0 Then 
+            postt2 = InStr(LCase(rngtt2.Item(i).Value), LCase("VP")) 
 
-            rngtt2.Item(i).EntireRow.Delete 
+            If postt2 > 0 Then 
+
+                rngtt2.Item(i).EntireRow.Delete 
+
+            End If 
 
         End If 
 
