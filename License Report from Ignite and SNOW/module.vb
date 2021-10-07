@@ -512,6 +512,8 @@ Sub automate()
 
     Application.CutCopyMode = False 
 
+     
+
     'vp remove 
 
     Dim lrfortt2 As Long 
@@ -571,6 +573,40 @@ Sub automate()
         If posnm > 0 Then 
 
             rngnm.Item(i).EntireRow.Delete 
+
+        End If 
+
+    Next i 
+
+    Application.CutCopyMode = False 
+
+     
+
+     
+
+    'Name remove shr-ignite-dynatrace 
+
+    Dim lrfornm1 As Long 
+
+    lrfornm1 = Cells(nsheet.Rows.Count, "C").End(xlUp).Row 
+
+     
+
+    Dim rngnm1 As Range 
+
+    Dim posnm1 As Integer 
+
+    Set rngnm1 = nsheet.Range("C1:C" & lrfornm1) 
+
+     
+
+    For i = rngnm1.Cells.Count To 1 Step -1 
+
+        posnm1 = InStr(LCase(rngnm1.Item(i).Value), LCase("shr-ignite-dynatrace")) 
+
+        If posnm1 > 0 Then 
+
+            rngnm1.Item(i).EntireRow.Delete 
 
         End If 
 
