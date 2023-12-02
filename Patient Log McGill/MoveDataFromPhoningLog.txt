@@ -1,0 +1,111 @@
+Sub MoveDataFromPhoningLog()
+
+    'Create Backup using the backup creation module - module 1
+    CreateBackup
+    
+    On Error GoTo ErrorHandler
+    
+    Dim sourceSheet As Worksheet
+    Dim destinationSheet As Worksheet
+    Dim lastRow As Long
+    Dim i As Long
+    Dim scheduledColumnIndex As Long
+    Dim movedColumnIndex As Long
+    
+    ' Set source sheet
+    Set sourceSheet = ThisWorkbook.Sheets("Phoning LOG")
+    
+    ' Set destination sheet
+    Set destinationSheet = ThisWorkbook.Sheets("Subject ID LOG")
+    
+    ' Find the last row in the source sheet
+    lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "A").End(xlUp).Row
+    
+    ' Find the column indexes
+    scheduledColumnIndex = GetColumnIndex(sourceSheet, "Scheduled(Y/N)")
+    movedColumnIndex = GetColumnIndex(sourceSheet, "Moved")
+    
+    ' Check if columns exist
+    If scheduledColumnIndex > 0 And movedColumnIndex > 0 Then
+    
+        ' Disable events temporarily to avoid interference
+        Application.EnableEvents = False
+        
+        ' Loop through each row in the source sheet
+        For i = 2 To lastRow ' Assuming the data starts from row 2
+            
+            ' Check conditions for copying
+            If UCase(sourceSheet.Cells(i, scheduledColumnIndex).Value) Like "Y*" And (UCase(sourceSheet.Cells(i, movedColumnIndex).Value) = "N" Or sourceSheet.Cells(i, movedColumnIndex).Value = "") Then
+                
+                ' Debugging: Print row number
+                Debug.Print "Processing row: " & i
+                
+                ' Debugging: Print values before copying
+                'Debug.Print "MRN: " & sourceSheet.Cells(i, 5).Value 'MRN is in column E which has index 5. So Cells(i, 5)
+                'Debug.Print "Last Name: " & sourceSheet.Cells(i, 6).Value
+                ' Add similar lines for other columns
+                
+                ' Copy data to destination sheet under the corresponding columns
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 3).End(xlUp).Row + 1, 3).Value = GetValueAsString(sourceSheet.Cells(i, 5))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 4).End(xlUp).Row + 1, 4).Value = GetValueAsString(sourceSheet.Cells(i, 6))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 5).End(xlUp).Row + 1, 5).Value = GetValueAsString(sourceSheet.Cells(i, 7))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 6).End(xlUp).Row + 1, 6).Value = GetValueAsString(sourceSheet.Cells(i, 8))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 7).End(xlUp).Row + 1, 7).Value = GetValueAsString(sourceSheet.Cells(i, 9))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 8).End(xlUp).Row + 1, 8).Value = GetValueAsString(sourceSheet.Cells(i, 10))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 9).End(xlUp).Row + 1, 9).Value = GetValueAsString(sourceSheet.Cells(i, 11))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 10).End(xlUp).Row + 1, 10).Value = GetValueAsString(sourceSheet.Cells(i, 12))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 11).End(xlUp).Row + 1, 11).Value = GetValueAsString(sourceSheet.Cells(i, 13))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 12).End(xlUp).Row + 1, 12).Value = GetValueAsString(sourceSheet.Cells(i, 14))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 13).End(xlUp).Row + 1, 13).Value = GetValueAsString(sourceSheet.Cells(i, 15))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 14).End(xlUp).Row + 1, 14).Value = GetValueAsString(sourceSheet.Cells(i, 16))
+                destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 15).End(xlUp).Row + 1, 15).Value = GetValueAsString(sourceSheet.Cells(i, 17))
+
+                ' Add similar lines for other columns
+                
+                ' Update "Moved" column value to "Y"
+                sourceSheet.Cells(i, movedColumnIndex).Value = "Y"
+                
+            End If
+        Next i
+        
+        ' Clean up and re-enable events
+        Application.EnableEvents = True
+        Set sourceSheet = Nothing
+        Set destinationSheet = Nothing
+        
+        MsgBox "Data has been successfully moved from Phoning LOG to Subject ID LOG."
+    
+    Else
+        MsgBox "One or more required columns are missing.", vbExclamation
+    End If
+    
+    Exit Sub
+
+ErrorHandler:
+    ' Debugging: Print the error message
+    MsgBox "An error occurred: " & Err.Description, vbExclamation
+    
+    ' Clean up and re-enable events
+    Application.EnableEvents = True
+    Set sourceSheet = Nothing
+    Set destinationSheet = Nothing
+    Exit Sub
+End Sub
+
+Function GetValueAsString(cell As Range) As String
+    If Not IsEmpty(cell.Value) Then
+        GetValueAsString = CStr(cell.Value)
+    Else
+        GetValueAsString = ""
+    End If
+End Function
+
+Function GetColumnIndex(sheet As Worksheet, columnName As String) As Long
+    On Error Resume Next
+    GetColumnIndex = sheet.Rows(1).Find(columnName, LookIn:=xlValues, LookAt:=xlWhole).Column
+    On Error GoTo 0
+End Function
+
+
+
+
