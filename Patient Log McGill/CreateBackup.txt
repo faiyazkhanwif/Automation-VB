@@ -1,0 +1,26 @@
+Sub CreateBackup()
+    Dim backupFolder As String
+    Dim backupPath As String
+    Dim backupFileName As String
+    
+    ' Define the backup folder name
+    backupFolder = "Backup"
+    
+    ' Check if the backup folder exists, if not, create it
+    If Len(Dir(ThisWorkbook.Path & "\" & backupFolder, vbDirectory)) = 0 Then
+        MkDir ThisWorkbook.Path & "\" & backupFolder
+    End If
+    
+    ' Define the backup file name using the current date and time
+    backupFileName = Format(Now, "yyyymmdd_hhmmss") & ".xlsm"
+    
+    ' Create the full backup path
+    backupPath = ThisWorkbook.Path & "\" & backupFolder & "\" & backupFileName
+    
+    ' Save a copy of the workbook to the backup path
+    ThisWorkbook.SaveCopyAs backupPath
+    
+    ' Display a message indicating that the backup is created
+    MsgBox "Backup created successfully: " & backupPath, vbInformation
+End Sub
+
