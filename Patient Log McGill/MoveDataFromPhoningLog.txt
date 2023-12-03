@@ -17,6 +17,7 @@ Sub MoveDataFromPhoningLog()
     
     ' Set destination sheet
     Set destinationSheet = ThisWorkbook.Sheets("Subject ID LOG")
+    Set destinationSheetPL = ThisWorkbook.Sheets("Patient LOG")
     
     ' Find the last row in the source sheet
     lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "A").End(xlUp).Row
@@ -45,6 +46,7 @@ Sub MoveDataFromPhoningLog()
                 'Debug.Print "MRN: " & sourceSheet.Cells(i, 5).Value 'MRN is in column E which has index 5. So Cells(i, 5)
                 'Debug.Print "Last Name: " & sourceSheet.Cells(i, 6).Value
                 ' Add similar lines for other columns
+                'Empty row for Subject ID LOG
                 Dim emptyRow As Long
                 emptyRow = destinationSheet.Cells(destinationSheet.Rows.Count, 3).End(xlUp).Row + 1
                 
@@ -68,7 +70,35 @@ Sub MoveDataFromPhoningLog()
                 destinationSheet.Cells(emptyRow, 13).Value = GetValueAsString(sourceSheet.Cells(i, 15))
                 destinationSheet.Cells(emptyRow, 14).Value = GetValueAsString(sourceSheet.Cells(i, 16))
                 destinationSheet.Cells(emptyRow, 15).Value = GetValueAsString(sourceSheet.Cells(i, 17))
-
+                
+                'Empty row for Patient LOG
+                Dim emptyRowPL As Long
+                emptyRowPL = destinationSheetPL.Cells(destinationSheetPL.Rows.Count, 2).End(xlUp).Row + 1 'Counting using 2nd column -> Prescreening Number
+                ' Find the first empty row
+                Do While Application.WorksheetFunction.CountA(destinationSheetPL.Rows(emptyRowPL)) > 0
+                    emptyRowPL = emptyRowPL + 1
+                Loop
+                ' Copy data to destination sheet PL under the corresponding columns
+                ' Add values to the found empty row PL
+                destinationSheetPL.Cells(emptyRowPL, 2).Value = GetValueAsString(sourceSheet.Cells(i, 2))
+                destinationSheetPL.Cells(emptyRowPL, 4).Value = GetValueAsString(sourceSheet.Cells(i, 23))
+                ' Moving date dd-mmm-yyyy
+                'destinationSheetPL.Cells(emptyRowPL, 5).Value = GetValueAsString(sourceSheet.Cells(i, 24))
+                'destinationSheetPL.Cells(emptyRowPL, 5).NumberFormat = sourceSheet.Cells(i, 24).NumberFormat
+                ' Check if the cell in the source sheet is a date and not null or empty
+                If Not IsEmpty(sourceSheet.Cells(i, 24).Value) And IsDate(sourceSheet.Cells(i, 24).Value) Then
+                    ' Convert the date to a string with the desired format
+                    Dim formattedDate As String
+                    formattedDate = Format(sourceSheet.Cells(i, 24).Value, "dd-mmm-yyyy")
+                    
+                    ' Set the value in the destination cell to the formatted date
+                    destinationSheetPL.Cells(emptyRowPL, 5).Value = formattedDate
+                End If
+                'Moving time with format
+                destinationSheetPL.Cells(emptyRowPL, 6).Value = GetValueAsString(sourceSheet.Cells(i, 25))
+                destinationSheetPL.Cells(emptyRowPL, 6).NumberFormat = sourceSheet.Cells(i, 25).NumberFormat
+                
+                destinationSheetPL.Cells(emptyRowPL, 7).Value = GetValueAsString(sourceSheet.Cells(i, 26))
                 
                 'destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 3).End(xlUp).Row + 1, 3).Value = GetValueAsString(sourceSheet.Cells(i, 5))
                 'destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 4).End(xlUp).Row + 1, 4).Value = GetValueAsString(sourceSheet.Cells(i, 6))
@@ -96,8 +126,9 @@ Sub MoveDataFromPhoningLog()
         Application.EnableEvents = True
         Set sourceSheet = Nothing
         Set destinationSheet = Nothing
+        Set destinationSheetPL = Nothing
         
-        MsgBox "Data has been successfully moved from Phoning LOG to Subject ID LOG."
+        MsgBox "Data has been successfully moved from Phoning LOG to Subject ID LOG and Patient ID LOG."
     
     Else
         MsgBox "One or more required columns are missing.", vbExclamation
