@@ -20,7 +20,7 @@ Sub MoveDataFromPhoningLog()
     Set destinationSheetPL = ThisWorkbook.Sheets("Patient LOG")
     
     ' Find the last row in the source sheet
-    lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "A").End(xlUp).Row
+    lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "E").End(xlUp).Row
     lastRow = lastRow + 1 'To fix missing last row bug
     
     ' Find the column indexes
