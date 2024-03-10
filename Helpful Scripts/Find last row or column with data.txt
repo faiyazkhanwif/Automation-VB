@@ -1,0 +1,26 @@
+Dim lastRow As Long
+Dim lastColumn As Long
+Dim sourceSheet As Worksheet
+
+Set sourceSheet = ThisWorkbook.Sheets("YourSheetName") ' Replace "YourSheetName" with the actual name of your source sheet
+
+' Find the last row and column with data in the source sheet
+lastRow = sourceSheet.Cells.Find(What:="*", _
+                After:=sourceSheet.Cells(1, 1), _
+                LookAt:=xlPart, _
+                LookIn:=xlFormulas, _
+                SearchOrder:=xlByRows, _
+                SearchDirection:=xlPrevious, _
+                MatchCase:=False).Row
+
+lastColumn = sourceSheet.Cells.Find(What:="*", _
+                After:=sourceSheet.Cells(1, 1), _
+                LookAt:=xlPart, _
+                LookIn:=xlFormulas, _
+                SearchOrder:=xlByColumns, _
+                SearchDirection:=xlPrevious, _
+                MatchCase:=False).Column
+
+' You can use either lastRow or lastColumn, depending on your requirement
+MsgBox "Last Row: " & lastRow
+MsgBox "Last Column: " & lastColumn
