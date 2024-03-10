@@ -42,7 +42,15 @@ Sub MoveDataFromPatientLog()
     Set destinationSheetPL = ThisWorkbook.Sheets("Sample LOG")
     
     ' Find the last row in the source sheet
-    lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "H").End(xlUp).Row
+    'lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "H").End(xlUp).Row
+    'Find the last row with data in any column(20240310)
+    lastRow = sourceSheet.Cells.Find(What:="*", _
+                After:=sourceSheet.Cells(1, 1), _
+                LookAt:=xlPart, _
+                LookIn:=xlFormulas, _
+                SearchOrder:=xlByRows, _
+                SearchDirection:=xlPrevious, _
+                MatchCase:=False).Row
     lastRow = lastRow + 1 'To fix missing last row bug
     
     ' Find the column indexes
