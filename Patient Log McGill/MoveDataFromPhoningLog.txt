@@ -1,7 +1,29 @@
 Sub MoveDataFromPhoningLog()
 
-    'Create Backup using the backup creation module - module 1
-    CreateBackup
+    'Create Backup - custom as custom name needed
+    Dim backupFolder As String
+    Dim backupPath As String
+    Dim backupFileName As String
+    
+    ' Define the backup folder name
+    backupFolder = "Backup"
+    
+    ' Check if the backup folder exists, if not, create it
+    If Len(Dir(ThisWorkbook.Path & "\" & backupFolder, vbDirectory)) = 0 Then
+        MkDir ThisWorkbook.Path & "\" & backupFolder
+    End If
+    
+    ' Define the backup file name using the current date and time
+    backupFileName = Format(Now, "yyyymmdd_hhmmss") & "_PH" & ".xlsm"
+    
+    ' Create the full backup path
+    backupPath = ThisWorkbook.Path & "\" & backupFolder & "\" & backupFileName
+    
+    ' Save a copy of the workbook to the backup path
+    ThisWorkbook.SaveCopyAs backupPath
+    
+    ' Display a message indicating that the backup is created
+    MsgBox "Backup created successfully: " & backupPath, vbInformation
     
     On Error GoTo ErrorHandler
     
@@ -20,7 +42,15 @@ Sub MoveDataFromPhoningLog()
     Set destinationSheetPL = ThisWorkbook.Sheets("Patient LOG")
     
     ' Find the last row in the source sheet
-    lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "E").End(xlUp).Row
+    'lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "E").End(xlUp).Row - Does not work if some cells have no data
+    'Find the last row with data in any column(20240310)
+    lastRow = sourceSheet.Cells.Find(What:="*", _
+                After:=sourceSheet.Cells(1, 1), _
+                LookAt:=xlPart, _
+                LookIn:=xlFormulas, _
+                SearchOrder:=xlByRows, _
+                SearchDirection:=xlPrevious, _
+                MatchCase:=False).Row
     lastRow = lastRow + 1 'To fix missing last row bug
     
     ' Find the column indexes
@@ -57,19 +87,21 @@ Sub MoveDataFromPhoningLog()
                 
                 ' Copy data to destination sheet under the corresponding columns
                 ' Add values to the found empty row
-                destinationSheet.Cells(emptyRow, 3).Value = GetValueAsString(sourceSheet.Cells(i, 5))
-                destinationSheet.Cells(emptyRow, 4).Value = GetValueAsString(sourceSheet.Cells(i, 6))
-                destinationSheet.Cells(emptyRow, 5).Value = GetValueAsString(sourceSheet.Cells(i, 7))
-                destinationSheet.Cells(emptyRow, 6).Value = GetValueAsString(sourceSheet.Cells(i, 8))
-                destinationSheet.Cells(emptyRow, 7).Value = GetValueAsString(sourceSheet.Cells(i, 9))
-                destinationSheet.Cells(emptyRow, 8).Value = GetValueAsString(sourceSheet.Cells(i, 10))
-                destinationSheet.Cells(emptyRow, 9).Value = GetValueAsString(sourceSheet.Cells(i, 11))
-                destinationSheet.Cells(emptyRow, 10).Value = GetValueAsString(sourceSheet.Cells(i, 12))
-                destinationSheet.Cells(emptyRow, 11).Value = GetValueAsString(sourceSheet.Cells(i, 13))
-                destinationSheet.Cells(emptyRow, 12).Value = GetValueAsString(sourceSheet.Cells(i, 14))
-                destinationSheet.Cells(emptyRow, 13).Value = GetValueAsString(sourceSheet.Cells(i, 15))
-                destinationSheet.Cells(emptyRow, 14).Value = GetValueAsString(sourceSheet.Cells(i, 16))
-                destinationSheet.Cells(emptyRow, 15).Value = GetValueAsString(sourceSheet.Cells(i, 17))
+                destinationSheet.Cells(emptyRow, 1).Value = GetValueAsString(sourceSheet.Cells(i, 2))
+                destinationSheet.Cells(emptyRow, 2).Value = GetValueAsString(sourceSheet.Cells(i, 3))
+                destinationSheet.Cells(emptyRow, 3).Value = GetValueAsString(sourceSheet.Cells(i, 6))
+                destinationSheet.Cells(emptyRow, 4).Value = GetValueAsString(sourceSheet.Cells(i, 7))
+                destinationSheet.Cells(emptyRow, 5).Value = GetValueAsString(sourceSheet.Cells(i, 8))
+                destinationSheet.Cells(emptyRow, 6).Value = GetValueAsString(sourceSheet.Cells(i, 9))
+                destinationSheet.Cells(emptyRow, 7).Value = GetValueAsString(sourceSheet.Cells(i, 10))
+                destinationSheet.Cells(emptyRow, 8).Value = GetValueAsString(sourceSheet.Cells(i, 11))
+                destinationSheet.Cells(emptyRow, 9).Value = GetValueAsString(sourceSheet.Cells(i, 12))
+                destinationSheet.Cells(emptyRow, 10).Value = GetValueAsString(sourceSheet.Cells(i, 13))
+                destinationSheet.Cells(emptyRow, 11).Value = GetValueAsString(sourceSheet.Cells(i, 14))
+                destinationSheet.Cells(emptyRow, 12).Value = GetValueAsString(sourceSheet.Cells(i, 15))
+                destinationSheet.Cells(emptyRow, 13).Value = GetValueAsString(sourceSheet.Cells(i, 16))
+                destinationSheet.Cells(emptyRow, 14).Value = GetValueAsString(sourceSheet.Cells(i, 17))
+                destinationSheet.Cells(emptyRow, 15).Value = GetValueAsString(sourceSheet.Cells(i, 18))
                 
                 'Empty row for Patient LOG
                 Dim emptyRowPL As Long
@@ -81,24 +113,22 @@ Sub MoveDataFromPhoningLog()
                 ' Copy data to destination sheet PL under the corresponding columns
                 ' Add values to the found empty row PL
                 destinationSheetPL.Cells(emptyRowPL, 2).Value = GetValueAsString(sourceSheet.Cells(i, 2))
-                destinationSheetPL.Cells(emptyRowPL, 4).Value = GetValueAsString(sourceSheet.Cells(i, 23))
+                destinationSheetPL.Cells(emptyRowPL, 4).Value = GetValueAsString(sourceSheet.Cells(i, 24))
                 ' Moving date dd-mmm-yyyy
-                'destinationSheetPL.Cells(emptyRowPL, 5).Value = GetValueAsString(sourceSheet.Cells(i, 24))
-                'destinationSheetPL.Cells(emptyRowPL, 5).NumberFormat = sourceSheet.Cells(i, 24).NumberFormat
                 ' Check if the cell in the source sheet is a date and not null or empty
-                If Not IsEmpty(sourceSheet.Cells(i, 24).Value) And IsDate(sourceSheet.Cells(i, 24).Value) Then
+                If Not IsEmpty(sourceSheet.Cells(i, 25).Value) And IsDate(sourceSheet.Cells(i, 25).Value) Then
                     ' Convert the date to a string with the desired format
                     Dim formattedDate As String
-                    formattedDate = Format(sourceSheet.Cells(i, 24).Value, "dd-mmm-yyyy")
+                    formattedDate = Format(sourceSheet.Cells(i, 25).Value, "dd-mmm-yyyy")
                     
                     ' Set the value in the destination cell to the formatted date
                     destinationSheetPL.Cells(emptyRowPL, 5).Value = formattedDate
                 End If
                 'Moving time with format
-                destinationSheetPL.Cells(emptyRowPL, 6).Value = GetValueAsString(sourceSheet.Cells(i, 25))
-                destinationSheetPL.Cells(emptyRowPL, 6).NumberFormat = sourceSheet.Cells(i, 25).NumberFormat
+                destinationSheetPL.Cells(emptyRowPL, 6).Value = GetValueAsString(sourceSheet.Cells(i, 26))
+                destinationSheetPL.Cells(emptyRowPL, 6).NumberFormat = sourceSheet.Cells(i, 26).NumberFormat
                 
-                destinationSheetPL.Cells(emptyRowPL, 7).Value = GetValueAsString(sourceSheet.Cells(i, 26))
+                destinationSheetPL.Cells(emptyRowPL, 7).Value = GetValueAsString(sourceSheet.Cells(i, 27))
                 
                 'destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 3).End(xlUp).Row + 1, 3).Value = GetValueAsString(sourceSheet.Cells(i, 5))
                 'destinationSheet.Cells(destinationSheet.Cells(destinationSheet.Rows.Count, 4).End(xlUp).Row + 1, 4).Value = GetValueAsString(sourceSheet.Cells(i, 6))
