@@ -1,4 +1,4 @@
-Sub MoveDataFromPatientLog()
+Sub MoveDataFromParticipantLog()
 
     'Create Backup - custom as custom name needed
     Dim backupFolder As String
@@ -14,7 +14,7 @@ Sub MoveDataFromPatientLog()
     End If
     
     ' Define the backup file name using the current date and time
-    backupFileName = Format(Now, "yyyymmdd_hhmmss") & "_PT" & ".xlsm"
+    backupFileName = Format(Now, "yyyymmdd_hhmmss") & "_PC" & ".xlsm"
     
     ' Create the full backup path
     backupPath = ThisWorkbook.Path & "\" & backupFolder & "\" & backupFileName
@@ -31,18 +31,15 @@ Sub MoveDataFromPatientLog()
     Dim destinationSheet As Worksheet
     Dim lastRow As Long
     Dim i As Long
-    Dim eligibleColumnIndex As Long
+    Dim completedColumnIndex As Long
     Dim movedColumnIndex As Long
     
     ' Set source sheet
-    Set sourceSheet = ThisWorkbook.Sheets("Patient LOG")
+    Set sourceSheet = ThisWorkbook.Sheets("Participant LOG")
     
     ' Set destination sheet
     Set destinationSheet = ThisWorkbook.Sheets("Screening LOG")
-    Set destinationSheetPL = ThisWorkbook.Sheets("Sample LOG")
-    
-    ' Find the last row in the source sheet
-    'lastRow = sourceSheet.Cells(sourceSheet.Rows.Count, "H").End(xlUp).Row
+
     'Find the last row with data in any column(20240310)
     lastRow = sourceSheet.Cells.Find(What:="*", _
                 After:=sourceSheet.Cells(1, 1), _
@@ -54,11 +51,11 @@ Sub MoveDataFromPatientLog()
     lastRow = lastRow + 1 'To fix missing last row bug
     
     ' Find the column indexes
-    eligibleColumnIndex = GetColumnIndex(sourceSheet, "Eligible")
+    completedColumnIndex = GetColumnIndex(sourceSheet, "Completed")
     movedColumnIndex = GetColumnIndex(sourceSheet, "Moved")
     
     ' Check if columns exist
-    If eligibleColumnIndex > 0 And movedColumnIndex > 0 Then
+    If completedColumnIndex > 0 And movedColumnIndex > 0 Then
     
         ' Disable events temporarily to avoid interference
         Application.EnableEvents = False
@@ -67,11 +64,19 @@ Sub MoveDataFromPatientLog()
         For i = 2 To lastRow ' Assuming the data starts from row 2
             
             ' Check conditions for copying
-            If UCase(sourceSheet.Cells(i, eligibleColumnIndex).Value) Like "Y*" And (UCase(sourceSheet.Cells(i, movedColumnIndex).Value) = "N" Or sourceSheet.Cells(i, movedColumnIndex).Value = "") Then
+            If UCase(sourceSheet.Cells(i, completedColumnIndex).Value) Like "Y*" And (UCase(sourceSheet.Cells(i, movedColumnIndex).Value) = "N" Or sourceSheet.Cells(i, movedColumnIndex).Value = "") Then
                 
                 ' Debugging: Print row number
                 Debug.Print "Processing row: " & i
                 
+                ' Debugging: Print values before copying
+                'Debug.Print "MRN: " & sourceSheet.Cells(i, 5).Value 'MRN is in column E which has index 5. So Cells(i, 5)
+                'Debug.Print "Last Name: " & sourceSheet.Cells(i, 6).Value
+                ' Add similar lines for other columns
+                
+                '-------------------------Screening LOG--------------------------
+                
+                'Empty row for Screening LOG
                 Dim emptyRow As Long
                 emptyRow = destinationSheet.Cells(destinationSheet.Rows.Count, 3).End(xlUp).Row + 1
                 
@@ -85,63 +90,47 @@ Sub MoveDataFromPatientLog()
                 destinationSheet.Cells(emptyRow, 3).Value = GetValueAsString(sourceSheet.Cells(i, 3))
                 ' Moving date dd-mmm-yyyy
                 ' Check if the cell in the source sheet is a date and not null or empty
-                If Not IsEmpty(sourceSheet.Cells(i, 8).Value) And IsDate(sourceSheet.Cells(i, 8).Value) Then
-                    ' Convert the date to a string with the desired format
-                    Dim formattedDate As String
-                    formattedDate = Format(sourceSheet.Cells(i, 8).Value, "dd-mmm-yyyy")
-                    
-                    ' Set the value in the destination cell to the formatted date
-                    destinationSheet.Cells(emptyRow, 4).Value = formattedDate
-                Else
-                    destinationSheet.Cells(emptyRow, 4).Value = GetValueAsString(sourceSheet.Cells(i, 8))
-                End If
-                
-                destinationSheet.Cells(emptyRow, 5).Value = GetValueAsString(sourceSheet.Cells(i, 9))
-                destinationSheet.Cells(emptyRow, 7).Value = GetValueAsString(sourceSheet.Cells(i, 10))
-                
-                ' Should be inside as not eligible data wont be moved
-                'Empty row for 2nd Destination
-                Dim emptyRowPL As Long
-                emptyRowPL = destinationSheetPL.Cells(destinationSheetPL.Rows.Count, 3).End(xlUp).Row + 1
-                ' Find the first empty row
-                Do While Application.WorksheetFunction.CountA(destinationSheetPL.Rows(emptyRowPL)) > 0
-                    emptyRowPL = emptyRowPL + 1
-                Loop
-                ' Copy data to destination sheet PL under the corresponding columns
-                ' Add values to the found empty row PL
-                destinationSheetPL.Cells(emptyRowPL, 1).Value = GetValueAsString(sourceSheet.Cells(i, 3))
-                'destinationSheetPL.Cells(emptyRowPL, 3).Value = GetValueAsString(sourceSheet.Cells(i, 13))
-                'destinationSheetPL.Cells(emptyRowPL, 4).Value = GetValueAsString(sourceSheet.Cells(i, 14))
-                ' Moving date dd-mmm-yyyy
-                ' Check if the cell in the source sheet is a date and not null or empty
                 If Not IsEmpty(sourceSheet.Cells(i, 13).Value) And IsDate(sourceSheet.Cells(i, 13).Value) Then
                     ' Convert the date to a string with the desired format
-                    Dim formattedDatePL As String
-                    formattedDatePL = Format(sourceSheet.Cells(i, 13).Value, "dd-mmm-yyyy")
-                    
+                    Dim formattedDate As String
+                    formattedDate = Format(sourceSheet.Cells(i, 13).Value, "dd-mmm-yyyy")
                     ' Set the value in the destination cell to the formatted date
-                    destinationSheetPL.Cells(emptyRowPL, 3).Value = formattedDatePL
-                Else
-                    destinationSheetPL.Cells(emptyRowPL, 3).Value = GetValueAsString(sourceSheet.Cells(i, 13))
+                    destinationSheet.Cells(emptyRow, 4).Value = formattedDate 'Date ICF
+                    destinationSheet.Cells(emptyRow, 9).Value = formattedDate 'Recruiting date as Recruiting date == Date ICF
                 End If
-                'Moving time with format
-                destinationSheetPL.Cells(emptyRowPL, 4).Value = GetValueAsString(sourceSheet.Cells(i, 14))
-                destinationSheetPL.Cells(emptyRowPL, 4).NumberFormat = sourceSheet.Cells(i, 14).NumberFormat
+                destinationSheet.Cells(emptyRow, 5).Value = GetValueAsString(sourceSheet.Cells(i, 14))
+                destinationSheet.Cells(emptyRow, 7).Value = GetValueAsString(sourceSheet.Cells(i, 15))
+                destinationSheet.Cells(emptyRow, 8).Value = GetValueAsString(sourceSheet.Cells(i, 7))
+
+                ' Create and assign subject initial
+                Dim firstName As String
+                Dim lastName As String
+                Dim subjectInitial As String
+                firstName = GetValueAsString(sourceSheet.Cells(i, 5))
+                lastName = GetValueAsString(sourceSheet.Cells(i, 4))
+                If Len(firstName) > 0 And Len(lastName) > 0 Then
+                    subjectInitial = Left(firstName, 1) & Left(lastName, 1)
+                ElseIf Len(firstName) > 0 Then
+                    subjectInitial = Left(firstName, 1)
+                ElseIf Len(lastName) > 0 Then
+                    subjectInitial = Left(lastName, 1)
+                Else
+                    subjectInitial = ""
+                End If
+                destinationSheet.Cells(emptyRow, 2).Value = subjectInitial
                 
                 ' Update "Moved" column value to "Y"
                 sourceSheet.Cells(i, movedColumnIndex).Value = "Y"
-            
+                
             End If
-            
         Next i
         
         ' Clean up and re-enable events
         Application.EnableEvents = True
         Set sourceSheet = Nothing
         Set destinationSheet = Nothing
-        Set destinationSheetPL = Nothing
         
-        MsgBox "Data has been successfully moved from Patient LOG to Screening LOG and Sample LOG."
+        MsgBox "Data has been successfully moved from Participant LOG to Screening LOG."
     
     Else
         MsgBox "One or more required columns are missing.", vbExclamation
@@ -173,6 +162,10 @@ Function GetColumnIndex(sheet As Worksheet, columnName As String) As Long
     GetColumnIndex = sheet.Rows(1).Find(columnName, LookIn:=xlValues, LookAt:=xlWhole).Column
     On Error GoTo 0
 End Function
+
+
+
+
 
 
 
